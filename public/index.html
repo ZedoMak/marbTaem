@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AddisBot - Food & Flour Orders</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h2>Loading AddisBot...</h2>
+            <p>Preparing your order experience</p>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container" style="display: none;">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <i class="fas fa-utensils"></i>
+                    AddisBot
+                </h1>
+                <div class="language-switcher">
+                    <button id="lang-en" class="lang-btn active">EN</button>
+                    <button id="lang-am" class="lang-btn">አማ</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <div class="welcome-content">
+                <div class="welcome-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <h2 data-translate="welcome.title">Welcome to AddisBot!</h2>
+                <p data-translate="welcome.subtitle">Choose what you'd like to order</p>
+                
+                <div class="order-options">
+                    <button class="order-card" data-order="food">
+                        <div class="card-icon">
+                            <i class="fas fa-hamburger"></i>
+                        </div>
+                        <h3 data-translate="food.title">Order Food</h3>
+                        <p data-translate="food.description">Delicious Ethiopian cuisine for events</p>
+                        <div class="card-price" data-translate="food.price">150 ETB per person</div>
+                    </button>
+                    
+                    <button class="order-card" data-order="flour">
+                        <div class="card-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <h3 data-translate="flour.title">Order Flour</h3>
+                        <p data-translate="flour.description">Fresh flour for your baking needs</p>
+                        <div class="card-price" data-translate="flour.price">70 ETB per kg</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Food Order Screen -->
+        <div id="food-screen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" onclick="showScreen('welcome-screen')">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2 data-translate="food.title">Order Food</h2>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-step active" data-step="people">
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 data-translate="food.people.title">How many people will be served?</h3>
+                        <div class="input-group">
+                            <input type="number" id="people-count" min="1" max="1000" placeholder="Enter number of people">
+                            <div class="quick-select">
+                                <button class="quick-btn" data-people="10">10</button>
+                                <button class="quick-btn" data-people="25">25</button>
+                                <button class="quick-btn" data-people="50">50</button>
+                                <button class="quick-btn" data-people="100">100</button>
+                            </div>
+                        </div>
+                        <div class="price-preview">
+                            <span data-translate="food.price.preview">Total: </span>
+                            <span id="food-price-preview">0 ETB</span>
+                        </div>
+                        <button class="next-btn" onclick="nextStep('event-type')" disabled>
+                            <span data-translate="common.next">Next</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="event-type">
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h3 data-translate="food.event.title">What type of event is this for?</h3>
+                        <div class="event-options">
+                            <button class="event-option" data-event="Birthday">
+                                <i class="fas fa-birthday-cake"></i>
+                                <span data-translate="food.event.birthday">Birthday Party</span>
+                            </button>
+                            <button class="event-option" data-event="Wedding">
+                                <i class="fas fa-heart"></i>
+                                <span data-translate="food.event.wedding">Wedding</span>
+                            </button>
+                            <button class="event-option" data-event="Business">
+                                <i class="fas fa-briefcase"></i>
+                                <span data-translate="food.event.business">Business Meeting</span>
+                            </button>
+                            <button class="event-option" data-event="Family">
+                                <i class="fas fa-home"></i>
+                                <span data-translate="food.event.family">Family Gathering</span>
+                            </button>
+                            <button class="event-option" data-event="Other">
+                                <i class="fas fa-ellipsis-h"></i>
+                                <span data-translate="food.event.other">Other</span>
+                            </button>
+                        </div>
+                        <div class="custom-event" style="display: none;">
+                            <input type="text" id="custom-event" placeholder="Enter event type">
+                        </div>
+                        <div class="step-buttons">
+                            <button class="back-btn" onclick="prevStep()">
+                                <i class="fas fa-arrow-left"></i>
+                                <span data-translate="common.back">Back</span>
+                            </button>
+                            <button class="next-btn" onclick="nextStep('event-date')" disabled>
+                                <span data-translate="common.next">Next</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="event-date">
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3 data-translate="food.date.title">When is the event?</h3>
+                        <div class="date-input-group">
+                            <input type="date" id="event-date" min="">
+                            <div class="date-help">
+                                <i class="fas fa-info-circle"></i>
+                                <span data-translate="food.date.help">Please select the event date</span>
+                            </div>
+                        </div>
+                        <div class="step-buttons">
+                            <button class="back-btn" onclick="prevStep()">
+                                <i class="fas fa-arrow-left"></i>
+                                <span data-translate="common.back">Back</span>
+                            </button>
+                            <button class="next-btn" onclick="nextStep('location')">
+                                <span data-translate="common.next">Next</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="location">
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h3 data-translate="location.title">Delivery Location</h3>
+                        <div class="input-group">
+                            <textarea id="delivery-location" placeholder="Enter your delivery address" rows="4"></textarea>
+                            <div class="location-help">
+                                <i class="fas fa-info-circle"></i>
+                                <span data-translate="location.help">Please provide detailed address for delivery</span>
+                            </div>
+                        </div>
+                        <div class="step-buttons">
+                            <button class="back-btn" onclick="prevStep()">
+                                <i class="fas fa-arrow-left"></i>
+                                <span data-translate="common.back">Back</span>
+                            </button>
+                            <button class="next-btn" onclick="showOrderSummary()">
+                                <span data-translate="common.next">Next</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flour Order Screen -->
+        <div id="flour-screen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" onclick="showScreen('welcome-screen')">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2 data-translate="flour.title">Order Flour</h2>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-step active" data-step="flour-type">
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <h3 data-translate="flour.type.title">What type of flour would you like?</h3>
+                        <div class="flour-options">
+                            <button class="flour-option" data-type="White Flour">
+                                <div class="flour-icon white">
+                                    <i class="fas fa-circle"></i>
+                                </div>
+                                <h4 data-translate="flour.type.white">White Flour</h4>
+                                <p data-translate="flour.type.white.desc">Premium white flour for baking</p>
+                            </button>
+                            <button class="flour-option" data-type="Whole Grain Flour">
+                                <div class="flour-icon brown">
+                                    <i class="fas fa-circle"></i>
+                                </div>
+                                <h4 data-translate="flour.type.whole">Whole Grain Flour</h4>
+                                <p data-translate="flour.type.whole.desc">Nutritious whole grain flour</p>
+                            </button>
+                            <button class="flour-option" data-type="Barley Flour">
+                                <div class="flour-icon barley">
+                                    <i class="fas fa-circle"></i>
+                                </div>
+                                <h4 data-translate="flour.type.barley">Barley Flour</h4>
+                                <p data-translate="flour.type.barley.desc">Traditional barley flour</p>
+                            </button>
+                        </div>
+                        <button class="next-btn" onclick="nextStep('quantity')" disabled>
+                            <span data-translate="common.next">Next</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="quantity">
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-weight-hanging"></i>
+                        </div>
+                        <h3 data-translate="flour.quantity.title">How many kilograms do you need?</h3>
+                        <div class="input-group">
+                            <input type="number" id="flour-quantity" min="0.1" max="100" step="0.1" placeholder="Enter quantity in kg">
+                            <div class="quick-select">
+                                <button class="quick-btn" data-quantity="1">1 kg</button>
+                                <button class="quick-btn" data-quantity="5">5 kg</button>
+                                <button class="quick-btn" data-quantity="10">10 kg</button>
+                                <button class="quick-btn" data-quantity="25">25 kg</button>
+                            </div>
+                        </div>
+                        <div class="price-preview">
+                            <span data-translate="flour.price.preview">Total: </span>
+                            <span id="flour-price-preview">0 ETB</span>
+                        </div>
+                        <div class="step-buttons">
+                            <button class="back-btn" onclick="prevStep()">
+                                <i class="fas fa-arrow-left"></i>
+                                <span data-translate="common.back">Back</span>
+                            </button>
+                            <button class="next-btn" onclick="nextStep('flour-location')">
+                                <span data-translate="common.next">Next</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="flour-location">
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h3 data-translate="location.title">Delivery Location</h3>
+                        <div class="input-group">
+                            <textarea id="flour-delivery-location" placeholder="Enter your delivery address" rows="4"></textarea>
+                            <div class="location-help">
+                                <i class="fas fa-info-circle"></i>
+                                <span data-translate="location.help">Please provide detailed address for delivery</span>
+                            </div>
+                        </div>
+                        <div class="step-buttons">
+                            <button class="back-btn" onclick="prevStep()">
+                                <i class="fas fa-arrow-left"></i>
+                                <span data-translate="common.back">Back</span>
+                            </button>
+                            <button class="next-btn" onclick="showOrderSummary()">
+                                <span data-translate="common.next">Next</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary Screen -->
+        <div id="summary-screen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" onclick="goBackToOrder()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2 data-translate="summary.title">Order Summary</h2>
+            </div>
+            
+            <div class="summary-content">
+                <div class="order-card-summary">
+                    <div class="order-icon">
+                        <i id="summary-icon" class="fas fa-hamburger"></i>
+                    </div>
+                    <div class="order-details">
+                        <h3 id="summary-title">Food Order</h3>
+                        <div id="summary-details"></div>
+                        <div class="order-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="summary-location"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="price-breakdown">
+                    <div class="price-item">
+                        <span data-translate="summary.subtotal">Subtotal</span>
+                        <span id="summary-subtotal">0 ETB</span>
+                    </div>
+                    <div class="price-total">
+                        <span data-translate="summary.total">Total</span>
+                        <span id="summary-total">0 ETB</span>
+                    </div>
+                </div>
+                
+                <div class="order-id">
+                    <i class="fas fa-receipt"></i>
+                    <span data-translate="summary.orderid">Order ID: </span>
+                    <span id="summary-order-id"></span>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="cancel-btn" onclick="showScreen('welcome-screen')">
+                    <i class="fas fa-times"></i>
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="confirm-btn" onclick="submitOrder()">
+                    <i class="fas fa-check"></i>
+                    <span data-translate="common.confirm">Confirm Order</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Success Screen -->
+        <div id="success-screen" class="screen">
+            <div class="success-content">
+                <div class="success-animation">
+                    <div class="checkmark">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+                <h2 data-translate="success.title">Order Received!</h2>
+                <p data-translate="success.message">Your order has been submitted successfully</p>
+                
+                <div class="contact-info">
+                    <h3 data-translate="success.contact.title">Contact us to complete your order:</h3>
+                    <div class="contact-buttons">
+                        <a href="#" id="telegram-contact" class="contact-btn telegram">
+                            <i class="fab fa-telegram"></i>
+                            <span data-translate="success.contact.telegram">Message Admin</span>
+                        </a>
+                        <a href="#" id="phone-contact" class="contact-btn phone">
+                            <i class="fas fa-phone"></i>
+                            <span data-translate="success.contact.phone">Call Admin</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="order-info">
+                    <div class="info-item">
+                        <i class="fas fa-receipt"></i>
+                        <span data-translate="success.orderid">Order ID: </span>
+                        <span id="success-order-id"></span>
+                    </div>
+                </div>
+                
+                <button class="new-order-btn" onclick="showScreen('welcome-screen')">
+                    <i class="fas fa-plus"></i>
+                    <span data-translate="success.neworder">Place New Order</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
