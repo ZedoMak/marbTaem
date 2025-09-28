@@ -7,6 +7,7 @@ const { Telegraf, Markup } = require('telegraf');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const ADMIN_ID = process.env.ADMIN_ID;
+const ADMIN_USER_NAME = process.env.ADMIN_USER_NAME;
 const ADMIN_PHONE = process.env.ADMIN_PHONE || '+251911234567'; // Default phone number
 
 // User sessions to track order state
@@ -274,8 +275,8 @@ bot.action('order_flour', async (ctx) => {
   await ctx.answerCbQuery();
   await ctx.editMessageText(getText(userId, 'flourType'),
     Markup.inlineKeyboard([
-      [Markup.button.callback(getText(userId, 'whiteFlour'), 'flour_white')],
-      [Markup.button.callback(getText(userId, 'wholeGrain'), 'flour_whole')],
+      [Markup.button.callback(getText(userId, 'porridge flour'), 'flour_porridge')],
+      [Markup.button.callback(getText(userId, 'soup flour'), 'flour_soup')],
       [Markup.button.callback(getText(userId, 'barley'), 'flour_barley')]
     ])
   );
@@ -288,8 +289,8 @@ bot.action(/^flour_(white|whole|barley)$/, async (ctx) => {
   const flourType = ctx.match[1];
   
   const typeNames = {
-    white: getText(userId, 'whiteFlour'),
-    whole: getText(userId, 'wholeGrain'),
+    porridge: getText(userId, 'porridgeFlour'),
+    soup: getText(userId, 'soupFlour'),
     barley: getText(userId, 'barley')
   };
   
@@ -325,7 +326,7 @@ bot.on('text', async (ctx) => {
       
     case 'flour_quantity':
       const quantity = parseFloat(text);
-      if (isNaN(quantity) || quantity < 0.1) {
+      if (isNaN(quantity) || quantity < 1) {
         await ctx.reply(getText(userId, 'invalidNumber'));
         return;
       }
@@ -403,7 +404,7 @@ bot.action('confirm_order', async (ctx) => {
   
   await ctx.editMessageText(completionMessage,
     Markup.inlineKeyboard([
-      [Markup.button.url(getText(userId, 'contactAdmin'), `https://t.me/${ADMIN_ID}`)],
+      [Markup.button.url(getText(userId, 'contactAdmin'), `https://t.me/${ADMIN_USER_NAME}`)],
       [Markup.button.url(getText(userId, 'adminPhone'), `https://wa.me/${ADMIN_PHONE.replace('+', '')}`)]
     ])
   );

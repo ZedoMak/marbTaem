@@ -22,8 +22,8 @@ A modern Telegram bot for ordering Ethiopian food with a beautiful Mini App inte
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/AddisBot.git
-   cd AddisBot
+   git clone https://github.com/yourusername/marbTaem.git
+   cd marbTaem
    ```
 
 2. **Install dependencies**

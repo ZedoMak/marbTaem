@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Store orders in memory (in production, use a database)
+// Store orders in memory (in production i'll use a database)
 const orders = new Map();
 
 // Verify Telegram WebApp data
@@ -68,7 +68,7 @@ app.post('/api/orders', async (req, res) => {
         // Store order
         orders.set(orderData.orderId, orderData);
         
-        // Here you would typically:
+        // In the near future i'll use a database so i'll save the order to the database and send notification to the admin
         // 1. Save to database
         // 2. Send notification to admin
         // 3. Send confirmation email/SMS

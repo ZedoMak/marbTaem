@@ -59,8 +59,8 @@
                             <i class="fas fa-seedling"></i>
                         </div>
                         <h3 data-translate="flour.title">Order Flour</h3>
-                        <p data-translate="flour.description">Fresh flour for your baking needs</p>
-                        <div class="card-price" data-translate="flour.price">70 ETB per kg</div>
+                        <p data-translate="flour.description">Fresh flour for your needs</p>
+                        <div class="card-price" data-translate="flour.price">200 ETB per kg</div>
                     </button>
                 </div>
             </div>
@@ -69,7 +69,7 @@
         <!-- Food Order Screen -->
         <div id="food-screen" class="screen">
             <div class="screen-header">
-                <button class="back-btn" onclick="showScreen('welcome-screen')">
+                <button class="back-btn">
                     <i class="fas fa-arrow-left"></i>
                 </button>
                 <h2 data-translate="food.title">Order Food</h2>
@@ -95,7 +95,7 @@
                             <span data-translate="food.price.preview">Total: </span>
                             <span id="food-price-preview">0 ETB</span>
                         </div>
-                        <button class="next-btn" onclick="nextStep('event-type')" disabled>
+                        <button class="next-btn" disabled>
                             <span data-translate="common.next">Next</span>
                             <i class="fas fa-arrow-right"></i>
                         </button>
@@ -134,11 +134,11 @@
                             <input type="text" id="custom-event" placeholder="Enter event type">
                         </div>
                         <div class="step-buttons">
-                            <button class="back-btn" onclick="prevStep()">
+                            <button class="back-btn">
                                 <i class="fas fa-arrow-left"></i>
                                 <span data-translate="common.back">Back</span>
                             </button>
-                            <button class="next-btn" onclick="nextStep('event-date')" disabled>
+                            <button class="next-btn" disabled>
                                 <span data-translate="common.next">Next</span>
                                 <i class="fas fa-arrow-right"></i>
                             </button>
@@ -160,11 +160,11 @@
                             </div>
                         </div>
                         <div class="step-buttons">
-                            <button class="back-btn" onclick="prevStep()">
+                            <button class="back-btn">
                                 <i class="fas fa-arrow-left"></i>
                                 <span data-translate="common.back">Back</span>
                             </button>
-                            <button class="next-btn" onclick="nextStep('location')">
+                            <button class="next-btn">
                                 <span data-translate="common.next">Next</span>
                                 <i class="fas fa-arrow-right"></i>
                             </button>
@@ -186,11 +186,11 @@
                             </div>
                         </div>
                         <div class="step-buttons">
-                            <button class="back-btn" onclick="prevStep()">
+                            <button class="back-btn">
                                 <i class="fas fa-arrow-left"></i>
                                 <span data-translate="common.back">Back</span>
                             </button>
-                            <button class="next-btn" onclick="showOrderSummary()">
+                            <button class="next-btn">
                                 <span data-translate="common.next">Next</span>
                                 <i class="fas fa-arrow-right"></i>
                             </button>
@@ -203,7 +203,7 @@
         <!-- Flour Order Screen -->
         <div id="flour-screen" class="screen">
             <div class="screen-header">
-                <button class="back-btn" onclick="showScreen('welcome-screen')">
+                <button class="back-btn">
                     <i class="fas fa-arrow-left"></i>
                 </button>
                 <h2 data-translate="flour.title">Order Flour</h2>
@@ -217,19 +217,19 @@
                         </div>
                         <h3 data-translate="flour.type.title">What type of flour would you like?</h3>
                         <div class="flour-options">
-                            <button class="flour-option" data-type="White Flour">
-                                <div class="flour-icon white">
+                            <button class="flour-option" data-type="Porridge Flour">
+                                <div class="flour-icon porridge">
                                     <i class="fas fa-circle"></i>
                                 </div>
-                                <h4 data-translate="flour.type.white">White Flour</h4>
-                                <p data-translate="flour.type.white.desc">Premium white flour for baking</p>
+                                <h4 data-translate="flour.type.porridge">Porridge Flour</h4>
+                                <p data-translate="flour.type.porridge.desc">Premium porridge flour for baking</p>
                             </button>
-                            <button class="flour-option" data-type="Whole Grain Flour">
-                                <div class="flour-icon brown">
+                            <button class="flour-option" data-type="Soup Flour">
+                                <div class="flour-icon soup">
                                     <i class="fas fa-circle"></i>
                                 </div>
-                                <h4 data-translate="flour.type.whole">Whole Grain Flour</h4>
-                                <p data-translate="flour.type.whole.desc">Nutritious whole grain flour</p>
+                                <h4 data-translate="flour.type.soup">Soup Flour</h4>
+                                <p data-translate="flour.type.soup.desc">Nutritious soup flour</p>
                             </button>
                             <button class="flour-option" data-type="Barley Flour">
                                 <div class="flour-icon barley">
@@ -239,7 +239,7 @@
                                 <p data-translate="flour.type.barley.desc">Traditional barley flour</p>
                             </button>
                         </div>
-                        <button class="next-btn" onclick="nextStep('quantity')" disabled>
+                        <button class="next-btn" disabled>
                             <span data-translate="common.next">Next</span>
                             <i class="fas fa-arrow-right"></i>
                         </button>
@@ -266,11 +266,11 @@
                             <span id="flour-price-preview">0 ETB</span>
                         </div>
                         <div class="step-buttons">
-                            <button class="back-btn" onclick="prevStep()">
+                            <button class="back-btn">
                                 <i class="fas fa-arrow-left"></i>
                                 <span data-translate="common.back">Back</span>
                             </button>
-                            <button class="next-btn" onclick="nextStep('flour-location')">
+                            <button class="next-btn">
                                 <span data-translate="common.next">Next</span>
                                 <i class="fas fa-arrow-right"></i>
                             </button>
@@ -292,11 +292,11 @@
                             </div>
                         </div>
                         <div class="step-buttons">
-                            <button class="back-btn" onclick="prevStep()">
+                            <button class="back-btn">
                                 <i class="fas fa-arrow-left"></i>
                                 <span data-translate="common.back">Back</span>
                             </button>
-                            <button class="next-btn" onclick="showOrderSummary()">
+                            <button class="next-btn">
                                 <span data-translate="common.next">Next</span>
                                 <i class="fas fa-arrow-right"></i>
                             </button>

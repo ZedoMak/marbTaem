@@ -10,14 +10,14 @@ let currentOrderType = '';
 // Translations
 const translations = {
     en: {
-        'welcome.title': 'Welcome to AddisBot!',
+        'welcome.title': 'Welcome to MARB TAEM!',
         'welcome.subtitle': 'Choose what you\'d like to order',
         'food.title': 'Order Food',
         'food.description': 'Delicious Ethiopian cuisine for events',
         'food.price': '150 ETB per person',
         'flour.title': 'Order Flour',
-        'flour.description': 'Fresh flour for your baking needs',
-        'flour.price': '70 ETB per kg',
+        'flour.description': 'Fresh flours',
+        'flour.price': '200 ETB per kg',
         'food.people.title': 'How many people will be served?',
         'food.price.preview': 'Total: ',
         'food.event.title': 'What type of event is this for?',
@@ -225,6 +225,29 @@ function initializeEventListeners() {
         orderData.location = e.target.value;
         updateNextButton();
     });
+    
+    // Next button listeners
+    document.querySelectorAll('.next-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!btn.disabled) {
+                nextStep();
+            }
+        });
+    });
+    
+    // Back button listeners
+    document.querySelectorAll('.back-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Check if this is a screen header back button
+            if (btn.closest('.screen-header')) {
+                showScreen('welcome-screen');
+            } else {
+                prevStep();
+            }
+        });
+    });
 }
 
 // Switch language
@@ -276,11 +299,14 @@ function showScreen(screenId) {
     // Reset form steps if needed
     if (screenId === 'welcome-screen') {
         resetOrder();
+    } else {
+        // Update next button state for form screens
+        updateNextButton();
     }
 }
 
 // Next step
-function nextStep(stepId) {
+function nextStep() {
     if (currentOrderType === 'food') {
         const steps = ['people', 'event-type', 'event-date', 'location'];
         const currentIndex = steps.indexOf(currentStep);
@@ -289,6 +315,10 @@ function nextStep(stepId) {
             document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
             currentStep = steps[currentIndex + 1];
             document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+            updateNextButton();
+        } else if (currentIndex === steps.length - 1) {
+            // Last step - show order summary
+            showOrderSummary();
         }
     } else {
         const steps = ['flour-type', 'quantity', 'flour-location'];
@@ -298,10 +328,12 @@ function nextStep(stepId) {
             document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
             currentStep = steps[currentIndex + 1];
             document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+            updateNextButton();
+        } else if (currentIndex === steps.length - 1) {
+            // Last step - show order summary
+            showOrderSummary();
         }
     }
-    
-    updateNextButton();
 }
 
 // Previous step
@@ -314,6 +346,10 @@ function prevStep() {
             document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
             currentStep = steps[currentIndex - 1];
             document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+            updateNextButton();
+        } else {
+            // Go back to welcome screen
+            showScreen('welcome-screen');
         }
     } else {
         const steps = ['flour-type', 'quantity', 'flour-location'];
@@ -323,10 +359,12 @@ function prevStep() {
             document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
             currentStep = steps[currentIndex - 1];
             document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+            updateNextButton();
+        } else {
+            // Go back to welcome screen
+            showScreen('welcome-screen');
         }
     }
-    
-    updateNextButton();
 }
 
 // Update food price
@@ -360,6 +398,8 @@ function updateFlourPrice() {
 // Update next button state
 function updateNextButton() {
     const nextBtn = document.querySelector('.next-btn');
+    if (!nextBtn) return; // Exit if no next button found
+    
     let canProceed = false;
     
     if (currentOrderType === 'food') {
@@ -392,6 +432,13 @@ function updateNextButton() {
     }
     
     nextBtn.disabled = !canProceed;
+    
+    // Update button appearance
+    if (canProceed) {
+        nextBtn.classList.remove('disabled');
+    } else {
+        nextBtn.classList.add('disabled');
+    }
 }
 
 // Show order summary
