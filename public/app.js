@@ -1,4 +1,5 @@
 // Telegram WebApp API
+// Next button fixes deployed
 const tg = window.Telegram.WebApp;
 
 // App state
