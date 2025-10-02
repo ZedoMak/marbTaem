@@ -429,16 +429,32 @@ bot.catch((err, ctx) => {
 
 // Start the bot
 console.log('Starting AddisBot...');
-// Ensure we are not conflicting with an existing webhook and drop any queued updates
-bot.telegram.deleteWebhook({ drop_pending_updates: true }).catch(() => {});
-bot.launch({
-  dropPendingUpdates: true
-}).then(() => {
-  console.log('Bot is running!');
-  console.log('Orders will be sent to admin for manual processing');
-}).catch((error) => {
-  console.error('Failed to start bot:', error);
-});
+
+async function safeLaunch(retry = 0) {
+  try {
+    // Remove webhook (if any) and drop pending updates before polling
+    await bot.telegram.deleteWebhook({ drop_pending_updates: true }).catch(() => {});
+    await bot.launch({
+      dropPendingUpdates: true,
+      polling: { timeout: 50 }
+    });
+    console.log('Bot is running!');
+    console.log('Orders will be sent to admin for manual processing');
+  } catch (err) {
+    const isConflict = err && err.response && err.response.error_code === 409;
+    if (isConflict && retry < 3) {
+      const delayMs = 1000 * (retry + 1);
+      console.warn(`Another instance is polling (409). Retrying in ${delayMs}ms...`);
+      try { bot.stop('RETRY'); } catch (_) {}
+      setTimeout(() => safeLaunch(retry + 1), delayMs);
+    } else {
+      console.error('Failed to start bot:', err);
+      console.error('Hint: Ensure no other process is running this bot token. Close other terminals or deployments.');
+    }
+  }
+}
+
+safeLaunch();
 
 // Enable graceful stop
 process.once('SIGINT', () => bot.stop('SIGINT'));
