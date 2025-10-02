@@ -398,8 +398,12 @@ function updateFlourPrice() {
 
 // Update next button state
 function updateNextButton() {
-    const nextBtn = document.querySelector('.next-btn');
-    if (!nextBtn) return; // Exit if no next button found
+    // Resolve the current step element explicitly by data-step
+    const stepElement = currentStep
+        ? document.querySelector(`.form-step[data-step="${currentStep}"]`)
+        : document.querySelector('.form-step.active');
+    const nextBtn = stepElement ? stepElement.querySelector('.next-btn') : document.querySelector('.next-btn');
+    if (!nextBtn) return;
     
     let canProceed = false;
     
@@ -409,32 +413,32 @@ function updateNextButton() {
                 canProceed = orderData.people > 0;
                 break;
             case 'event-type':
-                canProceed = orderData.eventType && orderData.eventType.length > 0;
+                canProceed = !!(orderData.eventType && orderData.eventType.length > 0);
                 break;
             case 'event-date':
-                canProceed = orderData.eventDate && orderData.eventDate.length > 0;
+                canProceed = !!(orderData.eventDate && orderData.eventDate.length > 0);
                 break;
             case 'location':
-                canProceed = orderData.location && orderData.location.length > 0;
+                canProceed = !!(orderData.location && orderData.location.length > 0);
                 break;
         }
     } else {
         switch (currentStep) {
             case 'flour-type':
-                canProceed = orderData.flourType && orderData.flourType.length > 0;
+                canProceed = !!(orderData.flourType && orderData.flourType.length > 0);
                 break;
             case 'quantity':
                 canProceed = orderData.quantity > 0;
                 break;
             case 'flour-location':
-                canProceed = orderData.location && orderData.location.length > 0;
+                canProceed = !!(orderData.location && orderData.location.length > 0);
                 break;
         }
     }
     
     nextBtn.disabled = !canProceed;
     
-    // Update button appearance
+    // Update button appearance for the active step only
     if (canProceed) {
         nextBtn.classList.remove('disabled');
     } else {
