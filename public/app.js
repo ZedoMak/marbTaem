@@ -233,6 +233,18 @@ function initializeEventListeners() {
             e.preventDefault();
             if (!btn.disabled) {
                 nextStep();
+            } else {
+                // Provide feedback when disabled
+                const container = btn.closest('.step-content');
+                if (container) {
+                    container.classList.remove('shake');
+                    // force reflow to restart animation
+                    void container.offsetWidth;
+                    container.classList.add('shake');
+                }
+                if (window.Telegram && window.Telegram.WebApp && tg.HapticFeedback) {
+                    try { tg.HapticFeedback.notificationOccurred('error'); } catch (_) {}
+                }
             }
         });
     });
@@ -281,9 +293,11 @@ function startOrder(orderType) {
     if (orderType === 'food') {
         showScreen('food-screen');
         currentStep = 'people';
+        updateProgress();
     } else {
         showScreen('flour-screen');
         currentStep = 'flour-type';
+        updateProgress();
     }
 }
 
@@ -317,6 +331,7 @@ function nextStep() {
             currentStep = steps[currentIndex + 1];
             document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
             updateNextButton();
+            updateProgress();
         } else if (currentIndex === steps.length - 1) {
             // Last step - show order summary
             showOrderSummary();
@@ -330,6 +345,7 @@ function nextStep() {
             currentStep = steps[currentIndex + 1];
             document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
             updateNextButton();
+            updateProgress();
         } else if (currentIndex === steps.length - 1) {
             // Last step - show order summary
             showOrderSummary();
@@ -348,6 +364,7 @@ function prevStep() {
             currentStep = steps[currentIndex - 1];
             document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
             updateNextButton();
+            updateProgress();
         } else {
             // Go back to welcome screen
             showScreen('welcome-screen');
@@ -361,6 +378,7 @@ function prevStep() {
             currentStep = steps[currentIndex - 1];
             document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
             updateNextButton();
+            updateProgress();
         } else {
             // Go back to welcome screen
             showScreen('welcome-screen');
@@ -444,6 +462,21 @@ function updateNextButton() {
     } else {
         nextBtn.classList.add('disabled');
     }
+}
+
+// Update progress dots
+function updateProgress() {
+    const foodProgress = document.getElementById('food-progress');
+    const flourProgress = document.getElementById('flour-progress');
+    const isFood = currentOrderType === 'food';
+    const steps = isFood ? ['people', 'event-type', 'event-date', 'location'] : ['flour-type', 'quantity', 'flour-location'];
+    const container = isFood ? foodProgress : flourProgress;
+    if (!container) return;
+    const index = steps.indexOf(currentStep);
+    container.querySelectorAll('.step-item').forEach((item, i) => {
+        item.classList.toggle('active', i === index);
+        item.classList.toggle('completed', i < index);
+    });
 }
 
 // Show order summary

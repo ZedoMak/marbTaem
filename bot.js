@@ -429,7 +429,11 @@ bot.catch((err, ctx) => {
 
 // Start the bot
 console.log('Starting AddisBot...');
-bot.launch().then(() => {
+// Ensure we are not conflicting with an existing webhook and drop any queued updates
+bot.telegram.deleteWebhook({ drop_pending_updates: true }).catch(() => {});
+bot.launch({
+  dropPendingUpdates: true
+}).then(() => {
   console.log('Bot is running!');
   console.log('Orders will be sent to admin for manual processing');
 }).catch((error) => {
